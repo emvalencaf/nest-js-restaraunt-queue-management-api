@@ -38,6 +38,9 @@ export class CustomerService {
                     codeArea: findOneOptions.codeArea,
                 },
             },
+            relations: {
+                phone: findOneOptions.showPhone === true,
+            },
         });
     }
 

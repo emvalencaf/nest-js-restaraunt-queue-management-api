@@ -1,4 +1,4 @@
-import { IsString, Length } from 'class-validator';
+import { IsBoolean, IsOptional, IsString, Length } from 'class-validator';
 
 export class GetCustomerByPhoneDTO {
     @IsString()
@@ -8,4 +8,8 @@ export class GetCustomerByPhoneDTO {
     @IsString()
     @Length(2, 2)
     codeArea: string;
+
+    @IsBoolean()
+    @IsOptional()
+    showPhone?: boolean = false;
 }

@@ -1,12 +1,19 @@
 // decorators
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    Column,
+    Entity,
+    OneToMany,
+    OneToOne,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
 import { CustomerPhoneEntity } from './customer-phone.entity';
+import { ReservationEntity } from '../../reservations/entities/reservation.entity';
 
 // entities
 
 @Entity({ name: 'customers' })
 export class CustomerEntity {
-    @PrimaryGeneratedColumn('rowid', { name: 'customer_id' })
+    @PrimaryGeneratedColumn('increment', { name: 'customer_id' })
     id: number;
 
     @Column({ name: 'customer_first_name', nullable: false })
@@ -35,4 +42,9 @@ export class CustomerEntity {
         },
     )
     phone: CustomerPhoneEntity;
+
+    @OneToMany(() => ReservationEntity, (reservation) => reservation.customer, {
+        cascade: true,
+    })
+    reservations: ReservationEntity[];
 }

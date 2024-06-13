@@ -5,11 +5,11 @@ export class GetCustomerByIdDTO {
     id: number;
     @IsBoolean()
     @IsOptional()
-    showPhone: boolean;
+    showPhone?: boolean;
     @IsBoolean()
     @IsOptional()
-    showReservations: boolean;
+    showReservations?: boolean;
     @IsBoolean()
     @IsOptional()
-    showQueueTickets: boolean;
+    showQueueTickets?: boolean;
 }
