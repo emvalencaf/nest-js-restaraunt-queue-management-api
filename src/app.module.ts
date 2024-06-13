@@ -4,6 +4,10 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { CustomerModule } from './customers/customer.module';
+import { ReservationModule } from './reservations/reservation.modules';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthGuard } from './guards/auth.guard';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
     imports: [
@@ -21,8 +25,16 @@ import { CustomerModule } from './customers/customer.module';
             synchronize: false,
         }),
         CustomerModule,
+        ReservationModule,
+        JwtModule,
+        AuthModule,
     ],
     controllers: [],
-    providers: [],
+    providers: [
+        {
+            provide: 'APP_GUARD',
+            useClass: AuthGuard,
+        },
+    ],
 })
 export class AppModule {}
