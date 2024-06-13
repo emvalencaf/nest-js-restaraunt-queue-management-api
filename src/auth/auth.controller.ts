@@ -8,6 +8,7 @@ import {
 import { AuthService } from './auth.service';
 import { Public } from '../decorators/public.decorator';
 import { AuthCustomerSignInDTO } from './dtos/auth-customer-sign-in.dto';
+import { AuthEmployeeSignInDTO } from './dtos/auth-employee-sign-in.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -16,7 +17,7 @@ export class AuthController {
     @Public()
     @Post('/customers')
     @UsePipes(ValidationPipe)
-    async signIn(@Body() signIn: AuthCustomerSignInDTO) {
+    async signInCustomer(@Body() signIn: AuthCustomerSignInDTO) {
         try {
             console.log(signIn);
             return this.authService.customerSignIn(signIn);
@@ -24,6 +25,21 @@ export class AuthController {
             return {
                 result: err,
                 statusCode: err,
+            };
+        }
+    }
+
+    @Public()
+    @Post('/employee')
+    @UsePipes(ValidationPipe)
+    async signInEmployee(@Body() signIn: AuthEmployeeSignInDTO) {
+        try {
+            console.log(signIn);
+        } catch (err) {
+            console.error(err);
+            return {
+                result: err,
+                status: err,
             };
         }
     }

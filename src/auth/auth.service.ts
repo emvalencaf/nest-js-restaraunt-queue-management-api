@@ -4,14 +4,22 @@ import { AuthCustomerSignInDTO } from './dtos/auth-customer-sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
 import { AuthCustomerSignInPayloadDTO } from './dtos/auth-customer-sign-in-payload.dto';
 import { AuthEmployeeSignInDTO } from './dtos/auth-employee-sign-in.dto';
+import { EmployeeService } from '../employees/employee.service';
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly customerService: CustomerService,
+        private readonly employeeService: EmployeeService,
         private readonly jwtService: JwtService,
     ) {}
 
+    async employeeSignIn(signIn: AuthEmployeeSignInDTO) {
+        const employee =
+            await this.employeeService.getCredentialsByUsername(signIn);
+        console.log(employee);
+    }
+    // sign in as a customer
     async customerSignIn(signIn: AuthCustomerSignInDTO) {
         const customer = await this.customerService.getByNumber({
             codeArea: signIn.codeArea,
@@ -27,15 +35,5 @@ export class AuthService {
                 ...new AuthCustomerSignInPayloadDTO(customer),
             }),
         };
-    }
-
-    async employeeSignIn(signIn: AuthEmployeeSignInDTO) {
-        return signIn;
-        /*
-        return {
-            accessToken: this.jwtService.sign({
-                ...new AuthEmployeeSignInDTO(signIn),
-            });
-        };*/
     }
 }

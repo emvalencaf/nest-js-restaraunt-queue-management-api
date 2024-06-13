@@ -10,6 +10,7 @@ import {
 export class CreateCustomerPhoneDTO {
     @IsString()
     @IsPhoneNumber()
+    @Length(9, 9)
     number: string;
 
     @IsNumberString()

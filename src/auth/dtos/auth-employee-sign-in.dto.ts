@@ -1,12 +1,11 @@
+import { IsString, Length } from 'class-validator';
 import { UserType } from '../../enums/user-type.enum';
 
 export class AuthEmployeeSignInDTO {
-    id: number;
+    @IsString()
+    @Length(3, 45)
     username: string;
-    userType: UserType;
-    constructor(id: number, username: string) {
-        this.id = id;
-        this.username = username;
-        this.userType = UserType.EMPLOYEE;
-    }
+    @IsString()
+    @Length(3, 60)
+    password: string;
 }

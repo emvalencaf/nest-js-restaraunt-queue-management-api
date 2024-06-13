@@ -3,10 +3,12 @@ import { CustomerModule } from '../customers/customer.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { EmployeeModule } from '../employees/employee.module';
 
 @Module({
     imports: [
         CustomerModule,
+        EmployeeModule,
         JwtModule.registerAsync({
             useFactory: () => ({
                 secret: process.env.JWT_SECRET || 'default_secret',
