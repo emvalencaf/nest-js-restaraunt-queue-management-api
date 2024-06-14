@@ -62,11 +62,19 @@ export class ReservationController {
         updateStatus: UpdateReservationStatusDTO,
     ) {
         if (
-            updateStatus.reservationStatus === 'checked-in' &&
-            userRole === UserType.CUSTOMER
+            (updateStatus.reservationStatus === 'checked-in' &&
+                userRole === UserType.CUSTOMER) ||
+            (userRole === UserType.CUSTOMER &&
+                updateStatus.reservationStatus === 'confirmed')
         )
             throw new UnauthorizedException(
-                'Only employees can checked-in reservation',
+                'Only employees can checked-in or confirmed reservation',
+            );
+
+        if (updateStatus.reservationStatus === 'confirmed')
+            return this.reservationService.updateStatus(
+                reservationId,
+                updateStatus,
             );
         if (updateStatus.reservationStatus === 'cancelled')
             return this.reservationService.cancel({

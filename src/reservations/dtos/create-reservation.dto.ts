@@ -1,4 +1,4 @@
-import { IsDateString, IsInt, IsNumber } from 'class-validator';
+import { IsBoolean, IsDateString, IsInt, IsNumber } from 'class-validator';
 
 export class CreateReservationDTO {
     @IsInt()
@@ -7,4 +7,7 @@ export class CreateReservationDTO {
 
     @IsDateString()
     startDatetime: string;
+
+    @IsBoolean()
+    isQueueTicket?: boolean = false;
 }

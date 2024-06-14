@@ -38,6 +38,12 @@ export class ReservationEntity {
     })
     reservationStatus: ReservationStatus;
 
+    @Column({
+        name: 'reservation_is_queue_ticket',
+        nullable: true,
+    })
+    isQueueTicket?: boolean = false;
+
     @OneToOne(
         () => CancelledReservationEntity,
         (cancelledReservation) => cancelledReservation.reservation,
