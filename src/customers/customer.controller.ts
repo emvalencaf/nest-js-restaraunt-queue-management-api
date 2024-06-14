@@ -13,6 +13,7 @@ import { CreateCustomerDTO } from './dtos/create-customer.dto';
 import { Public } from '../decorators/public.decorator';
 import { Roles } from '../decorators/roles.decorator';
 import { UserType } from '../enums/user-type.enum';
+import { UserId } from '../decorators/user-id.decorator';
 
 @Controller('customers')
 export class CustomerController {
@@ -30,6 +31,13 @@ export class CustomerController {
             return err;
         }
     }
+
+    @Roles(UserType.CUSTOMER)
+    @Get('/queue')
+    getPositionInQueue(@UserId() customerId: number) {
+        return this.customerService.getPositionInQueue(customerId);
+    }
+
     @Roles(UserType.EMPLOYEE, UserType.CUSTOMER)
     @Get('/:customerId')
     getById(

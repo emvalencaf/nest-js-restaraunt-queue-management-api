@@ -59,4 +59,19 @@ export class CustomerService {
                 customer.phone.isWhatsapp,
             ]);
     }
+    // get customer position in queue
+    async getPositionInQueue(customerId: number) {
+        // TO DO: A posição na fila vai ser por meio do uso do array
+        // acertar a tipagem
+        // TO DO: adicionar customer_id na view fact_queue
+        const customerQueue: any[] = await this.dataSourceRepository
+            .createQueryRunner()
+            .query(
+                `SELECT * FROM fact_queue WHERE customer_id = ${customerId}`,
+            );
+        return customerQueue.find((customerQueue, i) => ({
+            ...customerQueue,
+            position: i,
+        }));
+    }
 }
