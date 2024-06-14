@@ -19,7 +19,6 @@ export class AuthController {
     @UsePipes(ValidationPipe)
     async signInCustomer(@Body() signIn: AuthCustomerSignInDTO) {
         try {
-            console.log(signIn);
             return this.authService.customerSignIn(signIn);
         } catch (err) {
             return {
@@ -34,7 +33,7 @@ export class AuthController {
     @UsePipes(ValidationPipe)
     async signInEmployee(@Body() signIn: AuthEmployeeSignInDTO) {
         try {
-            console.log(signIn);
+            return this.authService.employeeSignIn(signIn);
         } catch (err) {
             console.error(err);
             return {

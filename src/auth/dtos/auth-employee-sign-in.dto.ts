@@ -1,5 +1,4 @@
 import { IsString, Length } from 'class-validator';
-import { UserType } from '../../enums/user-type.enum';
 
 export class AuthEmployeeSignInDTO {
     @IsString()

@@ -47,7 +47,6 @@ export class AuthGuard implements CanActivate {
             if (!payload || !payload.userType) {
                 throw new UnauthorizedException('Invalid token payload');
             }
-
             return requiredRoles.some((role) => role === payload.userType);
         } catch (err) {
             console.log(err);

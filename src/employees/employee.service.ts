@@ -1,13 +1,21 @@
 // decorators
+// modules
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+// entities
+import { EmployeeEntity } from './entities/employee.entity';
+import { EmployeeCredentialsEntity } from './entities/employee-credentials.entity';
+
+// dtos
+import { AuthEmployeeSignInDTO } from '../auth/dtos/auth-employee-sign-in.dto';
+import { CreateEmployeeDTO } from './dtos/create-employee.dto';
+
 // types
 import { DataSource, Repository } from 'typeorm';
-import { EmployeeEntity } from './entities/employee.entity';
-import { AuthEmployeeSignInDTO } from '../auth/dtos/auth-employee-sign-in.dto';
-import { EmployeeCredentialsEntity } from './entities/employee-credentials.entity';
-import { CreateEmployeeDTO } from './dtos/create-employee.dto';
+
+// utils
+import { hash } from 'bcrypt';
 
 @Injectable()
 export class EmployeeService {
@@ -19,28 +27,31 @@ export class EmployeeService {
         private readonly dataSourceRepository: DataSource,
     ) {}
 
+    async getQueue(filterByRequest: number) {
+        return await this.dataSourceRepository
+            .createQueryRunner()
+            .query(
+                `SELECT * FROM fact_queue ${filterByRequest && `WHERE reservation_requested_capability = ${filterByRequest}`};`,
+            );
+    }
+
     async getCredentialsByUsername(signIn: AuthEmployeeSignInDTO) {
+        console.log(signIn);
         return this.employeeCredentialRepository.findOne({
             where: {
                 username: signIn.username,
             },
         });
     }
-    /*
-in p_employee_first_name VARCHAR(45),
-										in p_employee_last_name VARCHAR(45),
-										in p_employee_birthdate DATE,
-										in p_employee_sex CHAR(1),
-                                        in p_employee_email VARCHAR(45),
-										in p_phone_number VARCHAR(9),
-										in p_phone_code_area CHAR(2),
-										in p_phone_is_whatsapp BOOLEAN,
-                                        in p_employee_username VARCHAR(45),
-                                        in p_employee_password VARCHAR(45))
-
-*/
 
     async signUpEmployee(employee: CreateEmployeeDTO) {
+        const salt = 10;
+
+        employee.credentials.password = await hash(
+            employee.credentials.password,
+            salt,
+        );
+
         return await this.dataSourceRepository
             .createQueryRunner()
             .query('call insert_new_employee (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
