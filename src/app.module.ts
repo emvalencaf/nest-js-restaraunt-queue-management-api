@@ -9,6 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthModule } from './auth/auth.module';
 import { EmployeeModule } from './employees/employee.module';
+import { TableModule } from './tables/table.module';
 
 @Module({
     imports: [
@@ -30,6 +31,7 @@ import { EmployeeModule } from './employees/employee.module';
         JwtModule,
         AuthModule,
         EmployeeModule,
+        TableModule,
     ],
     controllers: [],
     providers: [
