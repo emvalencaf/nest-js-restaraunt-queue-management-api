@@ -6,6 +6,7 @@ import {
     PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ReservationEntity } from './reservation.entity';
+import { TableEntity } from '../../tables/entities/table.entity';
 
 @Entity('assignedtablereservation')
 export class AssignedTableReservationEntity {
@@ -14,8 +15,8 @@ export class AssignedTableReservationEntity {
     })
     id: number;
 
-    @Column({ name: 'assigned_table_reservation_datetime', nullable: false })
-    assignedTableReservationDatetime: Date;
+    @Column({ name: 'assigned_table_reservation_datetime', nullable: true })
+    assignedTableReservationDatetime?: string;
 
     @ManyToOne(
         () => ReservationEntity,
@@ -26,4 +27,10 @@ export class AssignedTableReservationEntity {
     )
     @JoinColumn({ name: 'reservation_id' })
     reservation: ReservationEntity;
+
+    @ManyToOne(() => TableEntity, (table) => table.assignedReservations, {
+        eager: false,
+    })
+    @JoinColumn({ name: 'table_id' })
+    table: TableEntity;
 }

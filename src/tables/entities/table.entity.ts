@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { TableStatus } from '../enums/table-status.enum';
+import { AssignedTableReservationEntity } from '../../reservations/entities/assigned-table-reservation.entity';
 
 @Entity('tables')
 export class TableEntity {
@@ -19,4 +20,13 @@ export class TableEntity {
 
     @Column({ name: 'table_is_combinable', nullable: true, default: true })
     isCombinable: boolean;
+
+    @OneToMany(
+        () => AssignedTableReservationEntity,
+        (assignedTable) => assignedTable.table,
+        {
+            cascade: true,
+        },
+    )
+    assignedReservations: AssignedTableReservationEntity;
 }

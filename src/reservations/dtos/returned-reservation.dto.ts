@@ -10,13 +10,13 @@ export class ReturnedReservation {
     endDatetime: Date;
     checkedInDatetime: Date;
     cancelDatetime?: Date;
-    assignedTableReservationDatetime?: Date;
+    assignedTableReservationDatetime?: string;
     customer: CustomerEntity;
 
     constructor(reservation: ReservationEntity) {
         this.reservationId = reservation.id;
         this.requestedCapability = reservation.requestedCapability;
-        this.reservationStatus = reservation.reservationStatus;
+        this.reservationStatus = reservation.status;
         this.startDatetime = reservation.startDatetime;
         this.endDatetime = reservation.endDatetime;
         this.checkedInDatetime = reservation.checkedInDatetime;

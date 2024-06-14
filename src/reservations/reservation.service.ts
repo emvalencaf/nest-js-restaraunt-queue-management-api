@@ -1,5 +1,5 @@
 // decorators
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 // types
@@ -17,6 +17,9 @@ import { CancelReservationDTO } from './dtos/cancel-reservation.dto';
 import { ReservationStatus } from './enums/reservation-status.enum';
 import { GetReservationById } from './dtos/get-by-id.dto';
 import { ReturnedReservation } from './dtos/returned-reservation.dto';
+import { AssignTablesDTO } from '../employees/dtos/assign-tables.dto';
+import { AssignedTableReservationEntity } from './entities/assigned-table-reservation.entity';
+import { TableService } from '../tables/table.service';
 
 @Injectable()
 export class ReservationService {
@@ -24,13 +27,57 @@ export class ReservationService {
         private readonly dataSourceRepository: DataSource,
         @InjectRepository(ReservationEntity)
         private readonly reservationRepository: Repository<ReservationEntity>,
+        @InjectRepository(AssignedTableReservationEntity)
+        private readonly assignedReservationRepository: Repository<AssignedTableReservationEntity>,
+        private readonly tableService: TableService,
     ) {}
+    //
+    async assignReservationToTables(
+        reservationId: number,
+        assignedTables: AssignTablesDTO,
+    ) {
+        const reservation = await this.reservationRepository.findOne({
+            where: {
+                id: reservationId,
+            },
+        });
+
+        // assign a new table to a reservations
+        if (
+            !reservation ||
+            (reservation.status !== 'checked-in' &&
+                reservation.status != 'in_use')
+        )
+            throw new BadRequestException(
+                'Reservation with invalid status or not exists',
+            );
+
+        return assignedTables.tablesId.map(async (tableId) => {
+            const table = await this.tableService.getById(tableId);
+
+            if (!table || table.status !== 'available')
+                throw new BadRequestException(
+                    `Table id ${tableId} was not found or is not available.`,
+                );
+            if (table.maxCapability < reservation.requestedCapability)
+                throw new BadRequestException(
+                    `Table Id ${tableId} cannot be assigned to more than it's max capability`,
+                );
+
+            const assigned = this.assignedReservationRepository.create({
+                table: table,
+                reservation: reservation,
+            });
+
+            return this.assignedReservationRepository.save(assigned);
+        });
+    }
 
     // create a reservation
     async create(customerId: number, reservation: CreateReservationDTO) {
         const newReservation = await this.reservationRepository.create({
             ...reservation,
-            reservationStatus: ReservationStatus.PENDING,
+            status: ReservationStatus.PENDING,
             customer: { id: customerId },
         });
 
@@ -59,7 +106,7 @@ export class ReservationService {
     ) {
         // the db will deal
         return this.reservationRepository.update(reservationId, {
-            reservationStatus: update.reservationStatus,
+            status: update.reservationStatus,
         });
     }
 

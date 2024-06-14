@@ -36,7 +36,7 @@ export class ReservationEntity {
         nullable: true,
         default: ReservationStatus.PENDING,
     })
-    reservationStatus: ReservationStatus;
+    status: ReservationStatus;
 
     @Column({
         name: 'reservation_is_queue_ticket',

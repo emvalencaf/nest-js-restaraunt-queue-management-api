@@ -18,6 +18,8 @@ import { DataSource, Repository } from 'typeorm';
 
 // utils
 import { hash } from 'bcrypt';
+import { AssignTablesDTO } from './dtos/assign-tables.dto';
+import { ReservationService } from '../reservations/reservation.service';
 
 @Injectable()
 export class EmployeeService {
@@ -27,8 +29,18 @@ export class EmployeeService {
         @InjectRepository(EmployeeCredentialsEntity)
         private readonly employeeCredentialRepository: Repository<EmployeeCredentialsEntity>,
         private readonly dataSourceRepository: DataSource,
+        private readonly reservationService: ReservationService,
     ) {}
 
+    async assignReservationToTables(
+        reservationId: number,
+        assignedTables: AssignTablesDTO,
+    ) {
+        return this.reservationService.assignReservationToTables(
+            reservationId,
+            assignedTables,
+        );
+    }
     async getQueue(filterByRequest: number): Promise<ReturnedFactQueue[]> {
         const queue: ReturnedFactQueueView[] = await this.dataSourceRepository
             .createQueryRunner()

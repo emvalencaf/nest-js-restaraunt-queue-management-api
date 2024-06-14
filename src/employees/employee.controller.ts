@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { Public } from '../decorators/public.decorator';
 import { CreateEmployeeDTO } from './dtos/create-employee.dto';
 import { Roles } from '../decorators/roles.decorator';
 import { UserType } from '../enums/user-type.enum';
+import { AssignTablesDTO } from './dtos/assign-tables.dto';
 
 @Controller('employees')
 export class EmployeeController {
@@ -28,5 +29,17 @@ export class EmployeeController {
         const queue = await this.employeeService.getQueue(filterByRequest);
         console.log(queue);
         return queue;
+    }
+
+    @Roles(UserType.EMPLOYEE)
+    @Post('/assign-table/:reservationId')
+    async assignReservationToTables(
+        @Param('reservationnId') reservationId: number,
+        @Body() assignedTables: AssignTablesDTO,
+    ) {
+        return this.employeeService.assignReservationToTables(
+            reservationId,
+            assignedTables,
+        );
     }
 }

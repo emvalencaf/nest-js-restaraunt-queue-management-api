@@ -6,7 +6,7 @@ import { TableEntity } from './entities/table.entity';
 
 @Module({
     imports: [TypeOrmModule.forFeature([TableEntity])],
-    exports: [],
+    exports: [TableService],
     controllers: [TableController],
     providers: [TableService],
 })

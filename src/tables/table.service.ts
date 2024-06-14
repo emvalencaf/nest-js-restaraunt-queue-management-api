@@ -18,6 +18,14 @@ export class TableService {
         private readonly tableRepository: Repository<TableEntity>,
     ) {}
 
+    async getById(tableId: number) {
+        return this.tableRepository.findOne({
+            where: {
+                id: tableId,
+            },
+        });
+    }
+
     async getAll(query: QueryFindTableDTO) {
         return this.tableRepository.find({
             where: {
