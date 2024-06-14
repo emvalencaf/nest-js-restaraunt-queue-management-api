@@ -1,6 +1,6 @@
 // decorators
 // modules
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 // entities
@@ -10,6 +10,8 @@ import { EmployeeCredentialsEntity } from './entities/employee-credentials.entit
 // dtos
 import { AuthEmployeeSignInDTO } from '../auth/dtos/auth-employee-sign-in.dto';
 import { CreateEmployeeDTO } from './dtos/create-employee.dto';
+import { ReturnedFactQueue } from '../reservations/dtos/returned-fact-queue.dto';
+import { ReturnedFactQueueView } from '../reservations/dtos/returned-fact-queue-view.dto';
 
 // types
 import { DataSource, Repository } from 'typeorm';
@@ -27,12 +29,17 @@ export class EmployeeService {
         private readonly dataSourceRepository: DataSource,
     ) {}
 
-    async getQueue(filterByRequest: number) {
-        return await this.dataSourceRepository
+    async getQueue(filterByRequest: number): Promise<ReturnedFactQueue[]> {
+        const queue: ReturnedFactQueueView[] = await this.dataSourceRepository
             .createQueryRunner()
             .query(
-                `SELECT * FROM fact_queue ${filterByRequest && `WHERE reservation_requested_capability = ${filterByRequest}`};`,
+                `SELECT * FROM fact_queue ${filterByRequest && filterByRequest >= 1 ? `WHERE reservation_requested_capability = ${filterByRequest}` : ''};`,
             );
+
+        if (queue.length == 0 || !queue)
+            throw new NotFoundException('No queue found it');
+
+        return queue.map((reservation) => new ReturnedFactQueue(reservation));
     }
 
     async getCredentialsByUsername(signIn: AuthEmployeeSignInDTO) {

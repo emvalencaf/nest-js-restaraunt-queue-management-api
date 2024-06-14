@@ -24,7 +24,7 @@ export class EmployeeController {
 
     @Roles(UserType.EMPLOYEE)
     @Get('/queue')
-    async getQueue(@Query('filterByRequest') filterByRequest?: number) {
+    async getQueue(@Query('requestedCapability') filterByRequest?: number) {
         const queue = await this.employeeService.getQueue(filterByRequest);
         console.log(queue);
         return queue;

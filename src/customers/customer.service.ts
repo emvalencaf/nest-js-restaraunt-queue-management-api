@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CustomerEntity } from './entities/customer.entity';
 import { CustomerPhoneEntity } from './entities/customer-phone.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -6,6 +6,8 @@ import { GetCustomerByPhoneDTO } from './dtos/get-customer-by-phone.dto';
 import { GetCustomerByIdDTO } from './dtos/get-customer-by-id.dto';
 import { CreateCustomerDTO } from './dtos/create-customer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ReturnedCustomerQueueProcedureDTO } from './dtos/returned-customer-queue-procedure.dto';
+import { ReturnedCustomerQueueDTO } from './dtos/returned-customer-queue.dto';
 
 @Injectable()
 export class CustomerService {
@@ -61,17 +63,14 @@ export class CustomerService {
     }
     // get customer position in queue
     async getPositionInQueue(customerId: number) {
-        // TO DO: A posição na fila vai ser por meio do uso do array
-        // acertar a tipagem
-        // TO DO: adicionar customer_id na view fact_queue
-        const customerQueue: any[] = await this.dataSourceRepository
-            .createQueryRunner()
-            .query(
-                `SELECT * FROM fact_queue WHERE customer_id = ${customerId}`,
-            );
-        return customerQueue.find((customerQueue, i) => ({
-            ...customerQueue,
-            position: i,
-        }));
+        const result: ReturnedCustomerQueueProcedureDTO[] =
+            await this.dataSourceRepository
+                .createQueryRunner()
+                .query(`CALL get_position_in_queue(?)`, [customerId]);
+        const customerQueue = result[0];
+        if (!customerQueue)
+            throw new NotFoundException('No reservation/queue ticket found it');
+
+        return new ReturnedCustomerQueueDTO(customerQueue[0]);
     }
 }
