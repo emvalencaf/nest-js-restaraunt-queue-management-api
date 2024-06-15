@@ -41,6 +41,7 @@ export class EmployeeService {
             assignedTables,
         );
     }
+
     async getQueue(filterByRequest: number): Promise<ReturnedFactQueue[]> {
         const queue: ReturnedFactQueueView[] = await this.dataSourceRepository
             .createQueryRunner()

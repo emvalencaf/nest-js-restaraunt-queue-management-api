@@ -8,8 +8,9 @@ export class ReturnedCustomerQueueDTO {
     hasSpecialNeeds: boolean;
     reservation: {
         id: number;
+        averageWaitTime: string;
         requestedCapability: number;
-        startDatetime: string;
+        recordDatetime: string;
         checkedInDatetime: string;
         isQueueTicket: boolean;
     };
@@ -24,8 +25,9 @@ export class ReturnedCustomerQueueDTO {
         );
         this.reservation = {
             id: queuePosition.reservation_id,
+            averageWaitTime: queuePosition.reservation_average_wait_time,
             requestedCapability: queuePosition.reservation_requested_capability,
-            startDatetime: queuePosition.reservation_start_datetime,
+            recordDatetime: queuePosition.reservation_record_datetime,
             checkedInDatetime: queuePosition.reservation_checked_in_datetime,
             isQueueTicket: Boolean(queuePosition.reservation_is_queue_ticket),
         };

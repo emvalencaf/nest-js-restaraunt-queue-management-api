@@ -20,7 +20,10 @@ export class ReservationEntity {
     @Column({ name: 'reservation_requested_capability', nullable: false })
     requestedCapability: number;
 
-    @Column({ name: 'reservation_start_datetime', nullable: false })
+    @Column({ name: 'reservation_record_datetime', nullable: false })
+    recordDatetime: Date;
+
+    @Column({ name: 'reservation_start_datetime', nullable: true })
     startDatetime: Date;
 
     @Column({ name: 'reservation_end_datetime', nullable: true })

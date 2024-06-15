@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     Body,
     Controller,
     Get,
@@ -31,6 +32,10 @@ export class ReservationController {
         @UserId('customerId') customerId: number,
         @Body() reservation: CreateReservationDTO,
     ) {
+        if (!reservation.isQueueTicket && !reservation.recordDatetime)
+            throw new BadRequestException(
+                'Reservation needs a record date time',
+            );
         return this.reservationService.create(customerId, {
             ...reservation,
         });

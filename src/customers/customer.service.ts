@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 import { CustomerEntity } from './entities/customer.entity';
 import { CustomerPhoneEntity } from './entities/customer-phone.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -63,14 +67,43 @@ export class CustomerService {
     }
     // get customer position in queue
     async getPositionInQueue(customerId: number) {
-        const result: ReturnedCustomerQueueProcedureDTO[] =
-            await this.dataSourceRepository
-                .createQueryRunner()
-                .query(`CALL get_position_in_queue(?)`, [customerId]);
-        const customerQueue = result[0];
-        if (!customerQueue)
-            throw new NotFoundException('No reservation/queue ticket found it');
+        const customer = await this.customerEntity.findOne({
+            where: { id: customerId },
+            relations: { reservations: true },
+        });
 
-        return new ReturnedCustomerQueueDTO(customerQueue[0]);
+        if (
+            !customer?.reservations ||
+            customer.reservations.length === 0 ||
+            !customer.reservations.some(
+                (reservation) => reservation.status === 'checked-in',
+            )
+        ) {
+            throw new BadRequestException(
+                "Customer doesn't have any reservation or queue ticket checked-in",
+            );
+        }
+
+        // Cria um QueryRunner
+        const queryRunner = this.dataSourceRepository.createQueryRunner();
+        try {
+            // Chama o procedimento armazenado
+            const result: ReturnedCustomerQueueProcedureDTO[] =
+                await queryRunner.query(`CALL get_position_in_queue(?)`, [
+                    customerId,
+                ]);
+            const customerQueue = result[0];
+
+            if (!customerQueue) {
+                throw new NotFoundException(
+                    'No reservation/queue ticket found',
+                );
+            }
+            // Retorna o DTO com o resultado
+            return new ReturnedCustomerQueueDTO(customerQueue[0]);
+        } finally {
+            // Libera o QueryRunner
+            await queryRunner.release();
+        }
     }
 }

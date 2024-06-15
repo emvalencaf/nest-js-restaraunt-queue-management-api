@@ -9,9 +9,10 @@ export class ReturnedFactQueue {
     reservation: {
         id: number;
         requestedCapability: number;
-        startDatetime: string;
+        recordDatetime: string;
         checkedInDatetime: string;
         isQueueTicket: boolean;
+        averageWaitTime: string;
     };
 
     constructor(reservation: ReturnedFactQueueView) {
@@ -22,9 +23,10 @@ export class ReturnedFactQueue {
         this.reservation = {
             id: reservation.reservation_id,
             requestedCapability: reservation.reservation_requested_capability,
-            startDatetime: reservation.reservation_start_datetime,
+            recordDatetime: reservation.reservation_record_datetime,
             checkedInDatetime: reservation.reservation_checked_in_datetime,
             isQueueTicket: Boolean(reservation.reservation_is_queue_ticket),
+            averageWaitTime: reservation.reservation_average_wait_time,
         };
     }
 }

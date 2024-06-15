@@ -1,5 +1,9 @@
 // decorators
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 // types
@@ -20,6 +24,7 @@ import { ReturnedReservation } from './dtos/returned-reservation.dto';
 import { AssignTablesDTO } from '../employees/dtos/assign-tables.dto';
 import { AssignedTableReservationEntity } from './entities/assigned-table-reservation.entity';
 import { TableService } from '../tables/table.service';
+import { format } from 'date-fns';
 
 @Injectable()
 export class ReservationService {
@@ -41,7 +46,7 @@ export class ReservationService {
                 id: reservationId,
             },
         });
-
+        console.log(reservation);
         // assign a new table to a reservations
         if (
             !reservation ||
@@ -52,31 +57,54 @@ export class ReservationService {
                 'Reservation with invalid status or not exists',
             );
 
-        return assignedTables.tablesId.map(async (tableId) => {
-            const table = await this.tableService.getById(tableId);
+        const tables = await Promise.all(
+            assignedTables.tablesId.map(async (tableId) => {
+                return this.tableService.getById(tableId);
+            }),
+        );
 
-            if (!table || table.status !== 'available')
-                throw new BadRequestException(
-                    `Table id ${tableId} was not found or is not available.`,
-                );
-            if (table.maxCapability < reservation.requestedCapability)
-                throw new BadRequestException(
-                    `Table Id ${tableId} cannot be assigned to more than it's max capability`,
-                );
+        if (!tables || tables.length === 0)
+            throw new NotFoundException('Table id or ids were not found');
 
-            const assigned = this.assignedReservationRepository.create({
-                table: table,
-                reservation: reservation,
-            });
+        const maxCapability = tables.reduce(
+            (sum, table) => sum + table.maxCapability,
+            0,
+        );
 
-            return this.assignedReservationRepository.save(assigned);
-        });
+        return Promise.all(
+            tables.map(async (table) => {
+                if (table.status !== 'available')
+                    throw new BadRequestException(
+                        `Table id ${table.id} is not available.`,
+                    );
+
+                if (maxCapability < reservation.requestedCapability)
+                    throw new BadRequestException(
+                        `Table Id ${table.id} cannot be assigned to more than it's max capability`,
+                    );
+
+                const assigned = this.assignedReservationRepository.create({
+                    table: table,
+                    reservation: reservation,
+                });
+
+                await this.assignedReservationRepository.save(assigned);
+
+                return assigned;
+            }),
+        );
     }
 
     // create a reservation
     async create(customerId: number, reservation: CreateReservationDTO) {
         const newReservation = await this.reservationRepository.create({
             ...reservation,
+            recordDatetime: reservation?.isQueueTicket
+                ? format(
+                      new Date(reservation.recordDatetime),
+                      'yyyy-MM-dd HH:mm:ss', // make sure the date is correctly formatted
+                  )
+                : reservation.recordDatetime,
             status: ReservationStatus.PENDING,
             customer: { id: customerId },
         });

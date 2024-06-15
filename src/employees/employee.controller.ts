@@ -34,12 +34,16 @@ export class EmployeeController {
     @Roles(UserType.EMPLOYEE)
     @Post('/assign-table/:reservationId')
     async assignReservationToTables(
-        @Param('reservationnId') reservationId: number,
+        @Param('reservationId') reservationId: number,
         @Body() assignedTables: AssignTablesDTO,
     ) {
-        return this.employeeService.assignReservationToTables(
-            reservationId,
-            assignedTables,
-        );
+        try {
+            return this.employeeService.assignReservationToTables(
+                reservationId,
+                assignedTables,
+            );
+        } catch (err) {
+            return err;
+        }
     }
 }

@@ -1,4 +1,5 @@
 import { IsBoolean, IsDateString, IsInt, IsNumber } from 'class-validator';
+import { format } from 'date-fns';
 
 export class CreateReservationDTO {
     @IsInt()
@@ -6,7 +7,7 @@ export class CreateReservationDTO {
     requestedCapability: number;
 
     @IsDateString()
-    startDatetime: string;
+    recordDatetime?: string = format(Date.now(), 'yyyy-MM-dd HH:mm:ss');
 
     @IsBoolean()
     isQueueTicket?: boolean = false;

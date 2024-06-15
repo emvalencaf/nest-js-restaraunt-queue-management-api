@@ -5,7 +5,8 @@ export class ReturnedFactQueueView {
     customer_last_name: string;
     reservation_id: number;
     reservation_requested_capability: number;
-    reservation_start_datetime: string;
+    reservation_record_datetime: string;
     reservation_checked_in_datetime: string;
     reservation_is_queue_ticket: boolean;
+    reservation_average_wait_time: string;
 }

@@ -2,5 +2,5 @@ export enum TableStatus {
     AVAILABLE = 'available',
     OCCUPIED = 'occupied',
     ASSIGNED = 'assigned',
+    MAINTENANCE = 'maintenance',
 }
-// ENUM('available', 'occupied', 'assigned', 'maintenance')

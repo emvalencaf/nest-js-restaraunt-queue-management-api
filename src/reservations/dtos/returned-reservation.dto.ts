@@ -6,6 +6,7 @@ export class ReturnedReservation {
     reservationId: number;
     reservationStatus: ReservationStatus;
     requestedCapability: number;
+    recordDatetime: Date;
     startDatetime: Date;
     endDatetime: Date;
     checkedInDatetime: Date;
@@ -17,6 +18,7 @@ export class ReturnedReservation {
         this.reservationId = reservation.id;
         this.requestedCapability = reservation.requestedCapability;
         this.reservationStatus = reservation.status;
+        this.recordDatetime = reservation.recordDatetime;
         this.startDatetime = reservation.startDatetime;
         this.endDatetime = reservation.endDatetime;
         this.checkedInDatetime = reservation.checkedInDatetime;
