@@ -27,7 +27,13 @@ JWT_EXPIRES_IN=
 
 3. Abrir o projeto no terminal e digitar o seguinte comando: `npm run start:dev`
 
+## Banco de dados
+
+![Banco de Dados](/docs/db/diagram_r.png)
+
 ## Lógica
+
+As principais feats listas são:
 
 ### feat: Fazer reserva ou emitir uma ticket de espera
 
@@ -122,6 +128,16 @@ BEGIN
 	IF NEW.reservation_status = "done" THEN
 		UPDATE TABLES
         SET table_status = 'available'
+        WHERE table_id in (
+			SELECT table_id
+            FROM restaurant_db.assignedtablereservation as as_re
+            WHERE as_re.reservation_id = OLD.reservation_id
+        );
+    END IF;
+    
+    IF NEW.reservation_status = "in_use" THEN
+		UPDATE TABLES
+        SET table_status = 'occupied'
         WHERE table_id in (
 			SELECT table_id
             FROM restaurant_db.assignedtablereservation as as_re
