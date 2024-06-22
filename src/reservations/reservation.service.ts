@@ -3,6 +3,7 @@ import {
     BadRequestException,
     Injectable,
     NotFoundException,
+    UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -141,12 +142,31 @@ export class ReservationService {
     // cancel a reservation
     // both employees and customers can cancel a reservation
     async cancel(paramsCancel: CancelReservationDTO) {
+        const reservation = await this.reservationRepository.findOne({
+            where: {
+                id: paramsCancel.reservationId,
+            },
+            relations: {
+                customer: true,
+            },
+        });
+
+        if (!reservation)
+            throw new NotFoundException('no reservation was found it');
+
+        if (
+            paramsCancel.customerId &&
+            reservation.customer.id !== paramsCancel.customerId
+        )
+            throw new UnauthorizedException(
+                'only the customer or employee can cancel a reservation',
+            );
+
         return await this.dataSourceRepository
             .createQueryRunner()
-            .query('call cancel_reservation (?, ?, ?)', [
+            .query('call cancel_reservation (?, ?)', [
                 paramsCancel.reservationId,
                 paramsCancel.employeeId ? paramsCancel.employeeId : null,
-                paramsCancel.customerId ? paramsCancel.customerId : null,
             ]);
     }
 }

@@ -81,6 +81,7 @@ export class ReservationController {
                 reservationId,
                 updateStatus,
             );
+
         if (updateStatus.reservationStatus === 'cancelled')
             return this.reservationService.cancel({
                 reservationId,
