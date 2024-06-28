@@ -1,8 +1,29 @@
 # Restaraunt Queue Management API (API de Gerenciamento de Fila de Restaurante)
 
-## TO-DO
-
 ## [Documentação da API](https://documenter.getpostman.com/view/21997570/2sA3XPE3SY)
+
+## Equipe
+- Afonso Estevão Luna [<sup>
+    <img alt="Linkedin" width="15px" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" />
+</sup>](https://www.linkedin.com/in/afonso-luna/) [<sup>
+    <img alt="Github" width="15px" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" />
+</sup>](https://github.com/Pxxx010)
+- Antônio de Carlo Silva 
+- Bruno
+- Edson Mota Valença Filho [<sup>
+    <img alt="Linkedin" width="15px" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" />
+</sup> ](https://www.linkedin.com/in/emvalencaf/) [<sup>
+    <img alt="Github" width="15px" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" />
+</sup>](https://github.com/emvalencaf)
+- Guilherme Pinheiro Rodrigues
+- Iago Vieira [<sup>
+    <img alt="Linkedin" width="15px" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" />
+</sup>](https://www.linkedin.com/in/iago-vieir/)
+- Rômullo Moura [<sup>
+    <img alt="Linkedin" width="15px" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" />
+</sup> ](https://www.linkedin.com/in/romullomoura/)[<sup>
+    <img alt="Github" width="15px" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" />
+</sup>](https://github.com/romullo99)
 
 
 ## Como Usar
